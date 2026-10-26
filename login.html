@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đăng nhập | Luxury Stay</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+  <div class="auth-wrapper">
+    <div class="auth-card">
+      <h3><i class="bi bi-building"></i> LUXURY STAY</h3>
+      <p style="text-align:center;color:#888;margin-bottom:20px;" id="formSubtitle">Đăng nhập để sử dụng hệ thống</p>
+
+      <!-- Login Form -->
+      <form id="loginForm">
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="loginEmail" placeholder="email@example.com" required>
+        </div>
+        <div class="form-group">
+          <label>Mật khẩu</label>
+          <input type="password" id="loginPass" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;padding:12px;">
+          <i class="bi bi-box-arrow-in-right"></i> Đăng nhập
+        </button>
+      </form>
+
+      <!-- Register Form -->
+      <form id="registerForm" style="display:none;">
+        <div class="form-group"><label>Họ và tên</label><input type="text" id="regName" required></div>
+        <div class="form-group"><label>Email</label><input type="email" id="regEmail" required></div>
+        <div class="form-group"><label>Số điện thoại</label><input type="tel" id="regPhone" required></div>
+        <div class="form-group"><label>Mật khẩu</label><input type="password" id="regPass" required></div>
+        <button type="submit" class="btn btn-primary" style="width:100%;padding:12px;">
+          <i class="bi bi-person-plus"></i> Đăng ký
+        </button>
+      </form>
+
+      <p style="text-align:center;margin-top:18px;font-size:0.95rem;">
+        <span id="toggleText">Chưa có tài khoản?</span>
+        <a href="#" id="toggleBtn" style="color:#0d6efd;font-weight:600;">Đăng ký</a>
+      </p>
+      <p style="text-align:center;margin-top:10px;">
+        <a href="index.html" style="color:#999;font-size:0.9rem;"><i class="bi bi-arrow-left"></i> Về trang chủ</a>
+      </p>
+      <div style="margin-top:16px;padding:12px;background:#f8f9fa;border-radius:8px;font-size:0.8rem;color:#666;">
+       
+      </div>
+    </div>
+  </div>
+
+  <script src="js/main.js"></script>
+  <script>
+    // Demo accounts (simulate DB)
+    const demoUsers = [
+      { id:1, name:'Admin System', email:'admin@luxurystay.vn', password:'password', role:'admin' },
+      { id:2, name:'Nhân viên A', email:'staff@luxurystay.vn', password:'password', role:'staff' },
+      { id:3, name:'Nguyễn Văn Khách', email:'user@email.com', password:'password', role:'customer' }
+    ];
+
+    let isLogin = true;
+    document.getElementById('toggleBtn').onclick = function(e) {
+      e.preventDefault();
+      isLogin = !isLogin;
+      document.getElementById('loginForm').style.display = isLogin ? 'block' : 'none';
+      document.getElementById('registerForm').style.display = isLogin ? 'none' : 'block';
+      document.getElementById('formSubtitle').textContent = isLogin ? 'Đăng nhập để sử dụng hệ thống' : 'Tạo tài khoản khách hàng mới';
+      document.getElementById('toggleText').textContent = isLogin ? 'Chưa có tài khoản?' : 'Đã có tài khoản?';
+      this.textContent = isLogin ? 'Đăng ký' : 'Đăng nhập';
+    };
+
+    document.getElementById('loginForm').onsubmit = function(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim();
+      const pass = document.getElementById('loginPass').value;
+      const user = demoUsers.find(u => u.email === email && u.password === pass);
+      if (!user) { alert('Email hoặc mật khẩu không đúng!'); return; }
+      setUser({ id: user.id, name: user.name, email: user.email, role: user.role });
+      alert('Đăng nhập thành công với quyền: ' + (user.role === 'admin' ? 'Admin' : user.role === 'staff' ? 'Nhân viên' : 'Khách hàng'));
+      if (user.role === 'admin' || user.role === 'staff') {
+        location.href = 'admin/dashboard.html';
+      } else {
+        location.href = 'index.html';
+      }
+    };
+
+    document.getElementById('registerForm').onsubmit = function(e) {
+      e.preventDefault();
+      const name = document.getElementById('regName').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      if (demoUsers.find(u => u.email === email)) { alert('Email đã tồn tại!'); return; }
+      const newUser = { id: Date.now(), name, email, password: document.getElementById('regPass').value, role: 'customer' };
+      demoUsers.push(newUser);
+      alert('Đăng ký thành công! Vui lòng đăng nhập.');
+      document.getElementById('toggleBtn').click();
+    };
+  </script>
+</body>
+</html>

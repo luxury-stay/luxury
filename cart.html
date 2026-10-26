@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Giỏ đặt phòng | Luxury Stay</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="navbar-brand"><i class="bi bi-building"></i> LUXURY STAY</a>
+      <ul class="navbar-nav">
+        <li><a href="index.html">Trang chủ</a></li>
+        <li><a href="rooms.html">Phòng</a></li>
+        <li><a href="cart.html" class="active">Giỏ đặt <span class="cart-badge">0</span></a></li>
+        <li><a href="orders.html">Đơn của tôi</a></li>
+        <li id="navAdmin" style="display:none;"><a href="admin/dashboard.html">Admin</a></li>
+        <li id="navLogin"><a href="login.html" class="btn-gold"><i class="bi bi-person"></i> Đăng nhập</a></li>
+        <li id="navUser" style="display:none;"></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="section">
+    <div class="section-title"><h2>Giỏ đặt phòng</h2></div>
+    <div id="empty" style="display:none;text-align:center;padding:50px;color:#999;">
+      <i class="bi bi-cart-x" style="font-size:3rem;"></i>
+      <p style="margin-top:10px;">Giỏ đặt trống</p>
+      <a href="rooms.html" class="btn btn-primary" style="margin-top:12px;">Xem phòng</a>
+    </div>
+    <div id="content">
+      <div class="table-card">
+        <table>
+          <thead><tr><th>Phòng</th><th>Nhận / Trả</th><th>Số đêm</th><th>Đơn giá</th><th>Thành tiền</th><th></th></tr></thead>
+          <tbody id="cartBody"></tbody>
+        </table>
+      </div>
+      <div style="text-align:right;margin-top:20px;">
+        <div style="font-size:1.3rem;font-weight:700;color:#0d6efd;margin-bottom:12px;">Tổng: <span id="grandTotal">0đ</span></div>
+        <a href="checkout.html" class="btn btn-primary btn-lg">Tiến hành đặt phòng</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer"><div class="footer-bottom">&copy; 2026 Luxury Stay</div></footer>
+  <script src="js/main.js"></script>
+  <script>
+    if (!requireAuth(['customer','staff','admin'])) throw '';
+    function renderCart() {
+      const cart = getCart();
+      if (!cart.length) {
+        document.getElementById('empty').style.display = 'block';
+        document.getElementById('content').style.display = 'none';
+        return;
+      }
+      document.getElementById('empty').style.display = 'none';
+      document.getElementById('content').style.display = 'block';
+      let total = 0;
+      document.getElementById('cartBody').innerHTML = cart.map(i => {
+        const sub = i.price * i.nights;
+        total += sub;
+        return `<tr>
+          <td><strong>${i.name}</strong><br><small style="color:#888;">${i.type}</small></td>
+          <td>${i.checkin}<br><small>→ ${i.checkout}</small></td>
+          <td>${i.nights} đêm</td>
+          <td>${formatPrice(i.price)}</td>
+          <td><strong>${formatPrice(sub)}</strong></td>
+          <td><button class="btn btn-danger btn-sm" onclick="removeFromCart(${i.id})"><i class="bi bi-trash"></i></button></td>
+        </tr>`;
+      }).join('');
+      document.getElementById('grandTotal').textContent = formatPrice(total);
+    }
+    document.addEventListener('DOMContentLoaded', renderCart);
+  </script>
+</body>
+</html>

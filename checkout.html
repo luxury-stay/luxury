@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đặt phòng & Thanh toán | Luxury Stay</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="navbar-brand"><i class="bi bi-building"></i> LUXURY STAY</a>
+      <ul class="navbar-nav">
+        <li><a href="index.html">Trang chủ</a></li>
+        <li><a href="rooms.html">Phòng</a></li>
+        <li><a href="cart.html">Giỏ đặt <span class="cart-badge">0</span></a></li>
+        <li><a href="orders.html">Đơn của tôi</a></li>
+        <li id="navLogin"><a href="login.html" class="btn-gold"><i class="bi bi-person"></i> Đăng nhập</a></li>
+        <li id="navUser" style="display:none;"></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="section">
+    <div class="section-title"><h2>Đặt phòng & Thanh toán</h2></div>
+    <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:24px;">
+      <div style="background:#fff;border-radius:12px;padding:28px;box-shadow:0 4px 20px rgba(0,0,0,0.06);">
+        <h4 style="margin-bottom:16px;"><i class="bi bi-person"></i> Thông tin khách</h4>
+        <div class="form-group"><label>Họ tên</label><input type="text" id="guestName" required></div>
+        <div class="form-group"><label>Số điện thoại</label><input type="tel" id="guestPhone" required></div>
+        <div class="form-group"><label>Ghi chú</label><textarea id="note" rows="2"></textarea></div>
+
+        <h4 style="margin:20px 0 12px;"><i class="bi bi-credit-card"></i> Phương thức thanh toán</h4>
+        <div class="pay-options">
+          <div class="pay-opt selected" onclick="selPay(this,'cash')"><i class="bi bi-cash-coin"></i> Tiền mặt (tại KS)</div>
+          <div class="pay-opt" onclick="selPay(this,'bank')"><i class="bi bi-bank"></i> Chuyển khoản NH</div>
+          <div class="pay-opt" onclick="selPay(this,'momo')"><i class="bi bi-wallet2"></i> Ví MoMo</div>
+          <div class="pay-opt" onclick="selPay(this,'vnpay')"><i class="bi bi-credit-card-2-front"></i> VNPay / PayPal</div>
+        </div>
+        <button class="btn btn-primary btn-lg" style="width:100%;margin-top:16px;" onclick="placeOrder()">
+          <i class="bi bi-check-circle"></i> Xác nhận đặt phòng
+        </button>
+      </div>
+      <div style="background:#fff;border-radius:12px;padding:28px;box-shadow:0 4px 20px rgba(0,0,0,0.06);height:fit-content;">
+        <h4 style="margin-bottom:14px;">Đơn đặt của bạn</h4>
+        <div id="orderItems"></div>
+        <hr style="margin:14px 0;border:none;border-top:1px solid #eee;">
+        <div style="display:flex;justify-content:space-between;font-size:1.3rem;font-weight:700;color:#0d6efd;">
+          <span>Tổng</span><span id="sumTotal">0đ</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer"><div class="footer-bottom">&copy; 2026 Luxury Stay</div></footer>
+  <script src="js/main.js"></script>
+  <script>
+    if (!requireAuth(['customer','staff','admin'])) throw '';
+    let payMethod = 'cash';
+    function selPay(el, m) {
+      document.querySelectorAll('.pay-opt').forEach(o => o.classList.remove('selected'));
+      el.classList.add('selected');
+      payMethod = m;
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      const cart = getCart();
+      if (!cart.length) { alert('Giỏ trống!'); location.href='cart.html'; return; }
+      const u = getUser();
+      if (u) document.getElementById('guestName').value = u.name;
+      let total = 0;
+      document.getElementById('orderItems').innerHTML = cart.map(i => {
+        const sub = i.price * i.nights;
+        total += sub;
+        return `<div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:0.95rem;">
+          <span>${i.name} · ${i.nights}đêm</span><strong>${formatPrice(sub)}</strong></div>`;
+      }).join('');
+      document.getElementById('sumTotal').textContent = formatPrice(total);
+    });
+    function placeOrder() {
+      const name = document.getElementById('guestName').value.trim();
+      const phone = document.getElementById('guestPhone').value.trim();
+      if (!name || !phone) { alert('Vui lòng điền thông tin!'); return; }
+      const cart = getCart();
+      const total = cart.reduce((s,i) => s + i.price * i.nights, 0);
+      const code = 'DP' + Date.now().toString().slice(-6);
+      const orders = getOrders();
+      orders.unshift({
+        code, items: cart, total, name, phone,
+        note: document.getElementById('note').value,
+        payment: payMethod, paymentStatus: payMethod === 'cash' ? 'unpaid' : 'paid',
+        status: 'pending', date: new Date().toLocaleDateString('vi-VN'),
+        userId: getUser().id
+      });
+      saveOrders(orders);
+      localStorage.removeItem('cart');
+      alert('Đặt phòng thành công!\nMã đơn: ' + code + '\nTrạng thái: Chờ xác nhận');
+      location.href = 'orders.html';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản lý danh mục | Admin</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="../css/style.css" rel="stylesheet">
+</head>
+<body>
+  <div class="admin-wrapper">
+    <aside class="admin-sidebar">
+      <div class="brand"><h4><i class="bi bi-building"></i> LUXURY STAY</h4><small style="color:rgba(255,255,255,0.5);">Admin Panel</small></div>
+      <nav style="margin-top:12px;">
+        <a href="dashboard.html"><i class="bi bi-speedometer2"></i> Dashboard</a>
+        <a href="bookings.html"><i class="bi bi-calendar-check"></i> Quản lý đơn hàng</a>
+        <a href="rooms.html"><i class="bi bi-door-open"></i> Quản lý phòng</a>
+        <a href="users.html"><i class="bi bi-people"></i> Quản lý tài khoản</a>
+        <a href="categories.html" class="active"><i class="bi bi-tags"></i> Quản lý danh mục</a>
+        <hr style="border-color:rgba(255,255,255,0.1);margin:12px 16px;">
+        <a href="../index.html"><i class="bi bi-box-arrow-left"></i> Về trang chủ</a>
+        <a href="#" onclick="logout();return false;"><i class="bi bi-box-arrow-right"></i> Đăng xuất</a>
+      </nav>
+    </aside>
+    <div class="admin-content">
+      <div class="admin-topbar">
+        <h5 style="margin:0;font-weight:700;">Quản lý danh mục phòng</h5>
+        <button class="btn btn-primary btn-sm" onclick="alert('Thêm danh mục mới (PHP)')"><i class="bi bi-plus"></i> Thêm danh mục</button>
+      </div>
+      <div class="admin-main">
+        <div class="table-card">
+          <table>
+            <thead><tr><th>ID</th><th>Tên danh mục</th><th>Mô tả</th><th>Thao tác</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>Standard</td><td>Phòng tiêu chuẩn ấm cúng</td><td><button class="btn btn-outline btn-sm"><i class="bi bi-pencil"></i></button> <button class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></button></td></tr>
+              <tr><td>2</td><td>Deluxe</td><td>Phòng cao cấp rộng rãi</td><td><button class="btn btn-outline btn-sm"><i class="bi bi-pencil"></i></button> <button class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></button></td></tr>
+              <tr><td>3</td><td>Suite</td><td>Suite sang trọng view đẹp</td><td><button class="btn btn-outline btn-sm"><i class="bi bi-pencil"></i></button> <button class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></button></td></tr>
+              <tr><td>4</td><td>Presidential</td><td>Đỉnh cao sang trọng</td><td><button class="btn btn-outline btn-sm"><i class="bi bi-pencil"></i></button> <button class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></button></td></tr>
+              <tr><td>5</td><td>Family</td><td>Phòng gia đình rộng rãi</td><td><button class="btn btn-outline btn-sm"><i class="bi bi-pencil"></i></button> <button class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></button></td></tr>
+              <tr><td>6</td><td>Ocean View</td><td>Phòng view biển</td><td><button class="btn btn-outline btn-sm"><i class="bi bi-pencil"></i></button> <button class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="../js/main.js"></script>
+  <script>if (!requireAuth(['staff','admin'])) throw '';</script>
+</body>
+</html>

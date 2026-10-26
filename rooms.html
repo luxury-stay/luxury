@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Danh sách phòng | Luxury Stay</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="navbar-brand"><i class="bi bi-building"></i> LUXURY STAY</a>
+      <ul class="navbar-nav">
+        <li><a href="index.html">Trang chủ</a></li>
+        <li><a href="rooms.html" class="active">Phòng</a></li>
+        <li><a href="cart.html">Giỏ đặt <span class="cart-badge">0</span></a></li>
+        <li><a href="orders.html">Đơn của tôi</a></li>
+        <li id="navAdmin" style="display:none;"><a href="admin/dashboard.html">Admin</a></li>
+        <li id="navLogin"><a href="login.html" class="btn-gold"><i class="bi bi-person"></i> Đăng nhập</a></li>
+        <li id="navUser" style="display:none;"></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="section">
+    <div class="section-title"><h2>Danh sách phòng</h2></div>
+    <div style="display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap;">
+      <select id="filterType" onchange="filterRooms()" style="padding:8px 12px;border-radius:8px;border:1px solid #ddd;">
+        <option value="">Tất cả loại</option>
+        <option>Standard</option><option>Deluxe</option><option>Suite</option>
+        <option>Presidential</option><option>Family</option><option>Ocean View</option>
+      </select>
+      <select id="filterCap" onchange="filterRooms()" style="padding:8px 12px;border-radius:8px;border:1px solid #ddd;">
+        <option value="">Số khách</option>
+        <option value="1">1+</option><option value="2">2+</option><option value="4">4+</option><option value="5">5+</option>
+      </select>
+    </div>
+    <div class="room-grid" id="roomGrid"></div>
+  </section>
+
+  <footer class="footer"><div class="footer-bottom">&copy; 2026 Luxury Stay</div></footer>
+  <script src="js/main.js"></script>
+  <script>
+    if (!requireAuth(['customer','staff','admin'])) throw '';
+    function filterRooms() {
+      const t = document.getElementById('filterType').value;
+      const c = parseInt(document.getElementById('filterCap').value) || 0;
+      let list = rooms;
+      if (t) list = list.filter(r => r.type === t);
+      if (c) list = list.filter(r => r.capacity >= c);
+      renderRooms(list, 'roomGrid');
+    }
+    document.addEventListener('DOMContentLoaded', () => renderRooms(rooms, 'roomGrid'));
+  </script>
+</body>
+</html>
